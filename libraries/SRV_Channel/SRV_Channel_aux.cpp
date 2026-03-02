@@ -349,7 +349,7 @@ void SRV_Channels::enable_by_mask(uint32_t mask)
 /*
   set radio_out for all channels matching the given function type
  */
-void SRV_Channels::set_output_pwm(SRV_Channel::Function function, uint16_t value)
+void SRV_Channels::set_output_pwm(SRV_Channel::Function function, uint16_t value, bool constrained)
 {
     if (!function_assigned(function)) {
         return;
@@ -357,8 +357,27 @@ void SRV_Channels::set_output_pwm(SRV_Channel::Function function, uint16_t value
     // channels is a pointer assigned from obj_channels:
     for (uint8_t i = 0; i < ARRAY_SIZE(obj_channels); i++) {
         if (channels[i].function == function) {
-            channels[i].set_output_pwm(value);
+            uint16_t pwm = value;
+            if (constrained) {
+                pwm = constrain_uint16(pwm, channels[i].get_output_min(), channels[i].get_output_max());
+            }
+            channels[i].set_output_pwm(pwm);
             channels[i].output_ch();
+        }
+    }
+}
+
+void SRV_Channels::set_output_override_loops(SRV_Channel::Function function, uint8_t n)
+{
+    WITH_SEMAPHORE(_singleton->override_counter_sem);
+
+    if (!function_assigned(function)) {
+        return;
+    }
+    // channels is a pointer assigned from obj_channels:
+    for (uint8_t i = 0; i < ARRAY_SIZE(obj_channels); i++) {
+        if (channels[i].function == function && override_counter[i] < n) {
+            override_counter[i] = n;
         }
     }
 }

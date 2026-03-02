@@ -18,21 +18,18 @@ bool ModeServoTest::set_servo(uint8_t servo_num, uint16_t pwm)
         return false;
     }
 
-    // set yaw servo pwm and send output to servo
+    // set yaw servo pwm and send output to servo, skip the pwm recalculation for a loop
     if (servo_num == CH_YAW) {
-        SRV_Channels::set_output_pwm(SRV_Channel::k_tracker_yaw, pwm);
-        SRV_Channels::constrain_pwm(SRV_Channel::k_tracker_yaw);
+        SRV_Channels::set_output_pwm(SRV_Channel::k_tracker_yaw, pwm, true);
+        SRV_Channels::set_output_override_loops(SRV_Channel::k_tracker_yaw, 1);
     }
 
-    // set pitch servo pwm and send output to servo
+    // set pitch servo pwm and send output to servo, skip the pwm recalculation for a loop
     if (servo_num == CH_PITCH) {
-        SRV_Channels::set_output_pwm(SRV_Channel::k_tracker_pitch, pwm);
-        SRV_Channels::constrain_pwm(SRV_Channel::k_tracker_pitch);
+        SRV_Channels::set_output_pwm(SRV_Channel::k_tracker_pitch, pwm, true);
+        SRV_Channels::set_output_override_loops(SRV_Channel::k_tracker_pitch, 1);
     }
 
-    SRV_Channels::calc_pwm();
-    SRV_Channels::output_ch_all();
-    
     // return success
     return true;
 }

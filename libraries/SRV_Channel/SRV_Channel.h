@@ -393,7 +393,10 @@ public:
     static void set_default_function(uint8_t chan, SRV_Channel::Function function);
 
     // set output value for a function channel as a pwm value
-    static void set_output_pwm(SRV_Channel::Function function, uint16_t value);
+    static void set_output_pwm(SRV_Channel::Function function, uint16_t value, bool constrain = false);
+
+    // exclude channels with a function from pwm recalculation during at least next n loops
+    static void set_output_override_loops(SRV_Channel::Function function, uint8_t n);
 
     // set output value for a specific function channel as a pwm value
     static void set_output_pwm_chan(uint8_t chan, uint16_t value);

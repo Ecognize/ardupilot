@@ -1,3 +1,4 @@
+#include "SRV_Channel/SRV_Channel.h"
 #include "Tracker.h"
 
 /**
@@ -113,7 +114,9 @@ void Tracker::update_tracking(void)
         default:
         case PWMDisarmed::ZERO:
             SRV_Channels::set_output_pwm(SRV_Channel::k_tracker_yaw, 0);
+            SRV_Channels::set_output_override_loops(SRV_Channel::k_tracker_yaw, 1);
             SRV_Channels::set_output_pwm(SRV_Channel::k_tracker_pitch, 0);
+            SRV_Channels::set_output_override_loops(SRV_Channel::k_tracker_pitch, 1);
             break;
         }
     } else {
